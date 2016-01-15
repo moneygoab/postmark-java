@@ -49,7 +49,8 @@ public class TestClient {
                 args[5],
                 false,
                 args[6],
-                headers);
+                headers,
+                Boolean.parseBoolean(args[7]));
 
 
         String apiKey = "POSTMARK_API_TEST";
