@@ -72,6 +72,10 @@ public class PostmarkMessage {
     @SerializedName("Tag")
     private String tag;
 
+    //track email
+    @SerializedName("TrackOpens")
+    private boolean track;
+
     // A collection of optional message headers.
     @SerializedName("Headers")
     private List<NameValuePair> headers;
@@ -83,10 +87,10 @@ public class PostmarkMessage {
     private boolean isHTML;
 
 
-    public PostmarkMessage(String fromAddress, String toAddress, String replyToAddress, String ccAddress, String bccAddress, String subject, String body, boolean isHTML, String tag, List<NameValuePair> headers) {
+    public PostmarkMessage(String fromAddress, String toAddress, String replyToAddress, String ccAddress, String bccAddress, String subject, String body, boolean isHTML, String tag, List<NameValuePair> headers, boolean tracking) {
 
         this.isHTML = isHTML;
-
+        this.track = tracking;
         this.fromAddress = fromAddress;
         this.toAddress = toAddress;
         this.replyToAddress = replyToAddress;
@@ -105,17 +109,17 @@ public class PostmarkMessage {
     }
 
 
-    public PostmarkMessage(String fromAddress, String toAddress, String replyToAddress, String ccAddress, String subject, String body, boolean isHTML, String tag, List<NameValuePair> headers) {
+    public PostmarkMessage(String fromAddress, String toAddress, String replyToAddress, String ccAddress, String subject, String body, boolean isHTML, String tag, List<NameValuePair> headers, boolean tracking) {
 
-        this(fromAddress, toAddress, replyToAddress, ccAddress, null, subject, body, isHTML, tag, headers);
+        this(fromAddress, toAddress, replyToAddress, ccAddress, null, subject, body, isHTML, tag, headers,tracking);
 
     }
 
 
 
-    public PostmarkMessage(String fromAddress, String toAddress, String replyToAddress, String ccAddress, String subject, String body, boolean isHTML, String tag) {
+    public PostmarkMessage(String fromAddress, String toAddress, String replyToAddress, String ccAddress, String subject, String body, boolean isHTML, String tag, boolean tracking) {
 
-        this(fromAddress, toAddress, replyToAddress, ccAddress, null, subject, body, isHTML, tag, null);
+        this(fromAddress, toAddress, replyToAddress, ccAddress, null, subject, body, isHTML, tag, null,tracking);
 
     }
 
@@ -365,6 +369,7 @@ public class PostmarkMessage {
 
         sb.append(", tag='").append(tag).append('\'');
         sb.append(", headers=").append(headers);
+        sb.append(", TrackOpens=").append(track);
         sb.append('}');
         return sb.toString();
     }

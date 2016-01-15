@@ -97,8 +97,8 @@ public class PostmarkClient {
      * @param tag     A tag to identify the message in postmark
      * @return {@link PostmarkResponse} with details about the transaction
      */
-    public PostmarkResponse sendMessage(String from, String to, String replyTo, String cc, String subject, String body, boolean isHTML, String tag) throws PostmarkException {
-        return sendMessage(from, to, replyTo, cc, null, subject, body, isHTML, tag, null);
+    public PostmarkResponse sendMessage(String from, String to, String replyTo, String cc, String subject, String body, boolean isHTML, String tag,boolean tracking) throws PostmarkException {
+        return sendMessage(from, to, replyTo, cc, null, subject, body, isHTML, tag, null,tracking);
     }
 
     /**
@@ -119,8 +119,8 @@ public class PostmarkClient {
      * @param headers A collection of additional mail headers to send with the message
      * @return {@link PostmarkResponse} with details about the transaction
      */
-    public PostmarkResponse sendMessage(String from, String to, String replyTo, String cc, String subject, String body, boolean isHTML, String tag, List<NameValuePair> headers) throws PostmarkException {
-        return sendMessage(from, to, replyTo, cc, null, subject, body, isHTML, tag, headers);
+    public PostmarkResponse sendMessage(String from, String to, String replyTo, String cc, String subject, String body, boolean isHTML, String tag, List<NameValuePair> headers,boolean tracking) throws PostmarkException {
+        return sendMessage(from, to, replyTo, cc, null, subject, body, isHTML, tag, headers,tracking);
     }
 
     /**
@@ -142,8 +142,8 @@ public class PostmarkClient {
      * @param headers A collection of additional mail headers to send with the message
      * @return {@link PostmarkResponse} with details about the transaction
      */
-    public PostmarkResponse sendMessage(String from, String to, String replyTo, String cc, String bcc, String subject, String body, boolean isHTML, String tag, List<NameValuePair> headers) throws PostmarkException {
-        PostmarkMessage message = new PostmarkMessage(from, to, replyTo, subject, bcc, cc, body, isHTML, tag, headers);
+    public PostmarkResponse sendMessage(String from, String to, String replyTo, String cc, String bcc, String subject, String body, boolean isHTML, String tag, List<NameValuePair> headers, boolean tracking) throws PostmarkException {
+        PostmarkMessage message = new PostmarkMessage(from, to, replyTo, subject, bcc, cc, body, isHTML, tag, headers,tracking);
         return sendMessage(message);
     }
 
@@ -165,7 +165,7 @@ public class PostmarkClient {
         try {
 
             // Create post request to Postmark API endpoint
-            HttpPost method = new HttpPost("http://api.postmarkapp.com/email");
+            HttpPost method = new HttpPost("https://api.postmarkapp.com/email");
 
             // Add standard headers required by Postmark
             method.addHeader("Accept", "application/json");
