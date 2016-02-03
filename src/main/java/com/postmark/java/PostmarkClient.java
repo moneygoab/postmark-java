@@ -147,6 +147,22 @@ public class PostmarkClient {
         return sendMessage(message);
     }
 
+
+
+    public PostmarkResponse sendMessage(PostmarkMessage message) throws PostmarkException {
+        message.validate();
+        message.clean();
+        return sendMessage((Object)message,"https://api.postmarkapp.com/email");
+    }
+
+    public PostmarkResponse sendMessage(PostmarkTemplateMessage message) throws PostmarkException {
+        message.validate();
+        message.clean();
+        return sendMessage((Object)message,"https://api.postmarkapp.com/email/withTemplate");
+    }
+
+
+
     /**
      * Sends a message through the Postmark API.
      * All email addresses must be valid, and the sender must be
@@ -157,15 +173,14 @@ public class PostmarkClient {
      * @param message A prepared message instance.</param>
      * @return A response object
      */
-    public PostmarkResponse sendMessage(PostmarkMessage message) throws PostmarkException {
+    private PostmarkResponse sendMessage(Object message, String url) throws PostmarkException {
 
         HttpClient httpClient = new DefaultHttpClient();
         PostmarkResponse theResponse = new PostmarkResponse();
 
         try {
-
             // Create post request to Postmark API endpoint
-            HttpPost method = new HttpPost("https://api.postmarkapp.com/email");
+            HttpPost method = new HttpPost(url);
 
             // Add standard headers required by Postmark
             method.addHeader("Accept", "application/json");
@@ -174,8 +189,6 @@ public class PostmarkClient {
             method.addHeader("User-Agent", "Postmark-Java");
 
             // Validate and clean the message
-            message.validate();
-            message.clean();
 
             // Convert the message into JSON content
             Gson gson = gsonBuilder.create();

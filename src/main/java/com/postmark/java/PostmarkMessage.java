@@ -83,6 +83,7 @@ public class PostmarkMessage {
     @SerializedName("Attachments")
     private List<Attachment> attachments;
 
+
     @SkipMe
     private boolean isHTML;
 
