@@ -34,28 +34,7 @@ import java.util.List;
  * <p/>
  * http://github.com/jaredholdcroft/postmark-java
  */
-public class PostmarkMessage {
-
-    // The sender's email address.
-    @SerializedName("From")
-    private String fromAddress;
-
-    // The recipients's email address.
-    @SerializedName("To")
-    private String toAddress;
-
-    // The email address to reply to. This is optional.
-    @SerializedName("ReplyTo")
-    private String replyToAddress;
-
-    // The email address to carbon copy to. This is optional.
-    @SerializedName("Cc")
-    private String ccAddress;
-
-    // The email address to blind carbon copy to. This is optional.
-    @SerializedName("Bcc")
-    private String bccAddress;
-
+public class PostmarkMessage extends AbstractPostMarkMessage{
     // The message subject line.
     @SerializedName("Subject")
     private String subject;
@@ -68,22 +47,6 @@ public class PostmarkMessage {
     @SerializedName("TextBody")
     private String textBody;
 
-    // An optional tag than can be associated with the email.
-    @SerializedName("Tag")
-    private String tag;
-
-    //track email
-    @SerializedName("TrackOpens")
-    private boolean track;
-
-    // A collection of optional message headers.
-    @SerializedName("Headers")
-    private List<NameValuePair> headers;
-
-    @SerializedName("Attachments")
-    private List<Attachment> attachments;
-
-
     @SkipMe
     private boolean isHTML;
 
@@ -91,7 +54,7 @@ public class PostmarkMessage {
     public PostmarkMessage(String fromAddress, String toAddress, String replyToAddress, String ccAddress, String bccAddress, String subject, String body, boolean isHTML, String tag, List<NameValuePair> headers, boolean tracking) {
 
         this.isHTML = isHTML;
-        this.track = tracking;
+        this.tracking = tracking;
         this.fromAddress = fromAddress;
         this.toAddress = toAddress;
         this.replyToAddress = replyToAddress;
@@ -111,17 +74,13 @@ public class PostmarkMessage {
 
 
     public PostmarkMessage(String fromAddress, String toAddress, String replyToAddress, String ccAddress, String subject, String body, boolean isHTML, String tag, List<NameValuePair> headers, boolean tracking) {
-
         this(fromAddress, toAddress, replyToAddress, ccAddress, null, subject, body, isHTML, tag, headers,tracking);
-
     }
 
 
 
     public PostmarkMessage(String fromAddress, String toAddress, String replyToAddress, String ccAddress, String subject, String body, boolean isHTML, String tag, boolean tracking) {
-
         this(fromAddress, toAddress, replyToAddress, ccAddress, null, subject, body, isHTML, tag, null,tracking);
-
     }
 
     // Copy Constructor
@@ -144,22 +103,10 @@ public class PostmarkMessage {
 
     }
 
+    @Override
     public void clean() {
-        this.fromAddress = this.fromAddress.trim();
-        this.toAddress = this.toAddress.trim();
+        super.clean();
         this.subject = (this.subject == null) ? "" : this.subject.trim();
-    }
-
-    public void validate() throws PostmarkException {
-
-        if ((this.fromAddress == null) || (this.fromAddress.equals(""))) {
-            throw new PostmarkException("You must specify a valid 'From' email address.");
-        }
-        if ((this.toAddress == null) || (this.toAddress.equals(""))) {
-            throw new PostmarkException("You must specify a valid 'To' email address.");
-        }
-
-        // TODO: add more validation using regex
     }
 
 
@@ -364,13 +311,11 @@ public class PostmarkMessage {
         sb.append(", bccAddress='").append(bccAddress).append('\'');
         sb.append(", replyToAddress='").append(replyToAddress).append('\'');
         sb.append(", subject='").append(subject).append('\'');
-
         sb.append(", htmlBody='").append(htmlBody).append('\'');
         sb.append(", textBody='").append(textBody).append('\'');
-
         sb.append(", tag='").append(tag).append('\'');
         sb.append(", headers=").append(headers);
-        sb.append(", TrackOpens=").append(track);
+        sb.append(", TrackOpens=").append(tracking);
         sb.append('}');
         return sb.toString();
     }

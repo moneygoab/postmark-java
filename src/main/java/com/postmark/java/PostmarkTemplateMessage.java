@@ -1,21 +1,18 @@
 package com.postmark.java;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by marcus on 2016-02-02.
  */
-public class PostmarkTemplateMessage {
+public class PostmarkTemplateMessage extends AbstractPostMarkMessage {
     @SkipMe
-    private HashMap<String,String> modelParameters = new HashMap<>();
-    @SkipMe
-    private HashMap<String,HashMap<String,String>> modelInnerParameters = new HashMap<>();
+    private HashMap<String,HashMap<String,String>> modelParameters = new HashMap<>();
 
     @SerializedName("TemplateId")
     private int templateId;
@@ -23,146 +20,102 @@ public class PostmarkTemplateMessage {
     @SerializedName("TemplateModel")
     private JsonElement templateModel;
 
-    @SerializedName("InlineCss")
-    private String InlineCss;
+    public PostmarkTemplateMessage(int templateId, String fromAddress, String toAddress, String replyToAddress, String ccAddress, String tag, boolean tracking) {
+        this(templateId,fromAddress,toAddress,replyToAddress,ccAddress,tag,null,tracking);
+    }
 
-    @SerializedName("From")
-    private String from;
-
-    @SerializedName("To")
-    private String to;
-
-    @SerializedName("Cc")
-    private String cc;
-
-    @SerializedName("Bcc")
-    private String bcc;
-
-    @SerializedName("Tag")
-    private String tag;
-
-    @SerializedName("ReplyTo")
-    private String replyTo;
-
-    @SerializedName("Headers")
-    private String headers;
-
-    @SerializedName("TrackOpens")
-    private boolean trackOpen;
-
-    @SerializedName("Attachments")
-    private String attachments;
-
-
-    public PostmarkTemplateMessage(String to, String from, int templateId, boolean track){
-        this.to = to;
-        this.from = from;
+    public PostmarkTemplateMessage(int templateId, String fromAddress, String toAddress, String replyToAddress, String ccAddress, String tag, List<NameValuePair> headers, boolean tracking) {
         this.templateId = templateId;
-        this.trackOpen = track;
-
+        this.fromAddress = fromAddress;
+        this.toAddress = toAddress;
+        this.replyToAddress = replyToAddress;
+        this.ccAddress = ccAddress;
+        this.tag = tag;
+        this.headers = (headers == null) ? new ArrayList<NameValuePair>() : headers;
+        this.tracking = tracking;
     }
 
-    public void clean() {
-        this.from = this.from.trim();
-        this.to = this.to.trim();
-    }
 
     public void validate() throws PostmarkException {
 
-        if ((this.from == null) || (this.from.equals(""))) {
-            throw new PostmarkException("You must specify a valid 'From' email address.");
-        }
-        if ((this.to == null) || (this.to.equals(""))) {
-            throw new PostmarkException("You must specify a valid 'To' email address.");
-        }
+        super.validate();
 
-
-        String test = generateTempleteModel();
-        templateModel = new JsonParser().parse(test);
+        templateModel = new JsonParser().parse(generateTempleteModel());
 
         if (this.templateModel == null) {
             throw new PostmarkException("You must specify a valid 'To' email address.");
         }
 
-
-
-        // TODO: add more validation using regex
     }
-
 
 
     private String generateTempleteModel(){
-        StringBuilder sb = new StringBuilder();
-        sb.append("{");
-        Iterator<Map.Entry<String,String>> set = modelParameters.entrySet().iterator();
+        JsonParser parser = new JsonParser();
+        JsonObject templeteModel = new JsonObject();
+        for(Map.Entry<String,HashMap<String,String>> entry:modelParameters.entrySet()){
+            JsonObject object = new JsonObject();
+            HashMap<String,String> map = entry.getValue();
 
-        boolean loop = !modelParameters.isEmpty();
+            for(Map.Entry<String,String> innerEntry: map.entrySet()){
 
-        while(loop){
-            Map.Entry<String,String> entry = set.next();
-            sb.append("'" + entry.getKey() + "': '"  + entry.getValue() +"'");
-            if(set.hasNext()){
-                sb.append(",");
-            }else{
-                loop = false;
-            }
-        }
-        if(loop){
-            sb.append(",");
-        }
-
-        loop = !modelInnerParameters.isEmpty();
-
-        Iterator<Map.Entry<String,HashMap<String,String>>> innerSet = modelInnerParameters.entrySet().iterator();
-        while(loop){
-            Map.Entry<String,HashMap<String,String>> entry = innerSet.next();
-
-            sb.append("'" + entry.getKey() + "': {" );
-
-            boolean innerLoop= true;
-
-            Iterator<Map.Entry<String,String>> values = entry.getValue().entrySet().iterator();
-
-            while(innerLoop){
-
-                Map.Entry<String,String> innerEntry = values.next();
-                sb.append(" '" + innerEntry.getKey() + "': '"  + innerEntry.getValue() +"'");
-
-                if(values.hasNext()){
-                    sb.append(",");
+                String[] entryMap = innerEntry.getKey().split("\\.");
+                if(entryMap.length > 1){
+                    object.add(entryMap[0],createJsonObject(removeFirstInArray(entryMap),innerEntry.getValue()));
                 }else{
-                    innerLoop = false;
+                    object.addProperty(entryMap[0],innerEntry.getValue());
                 }
-            }
-            sb.append("}");
-            if(innerSet.hasNext()){
-                sb.append(",");
-            }else{
 
-                loop = false;
             }
+
+            templeteModel.add(entry.getKey(),object);
         }
 
-
-        sb.append("}");
-
-        return sb.toString();
+        return templeteModel.toString();
     }
 
-
-    public void addInnerParameter(String outer, String parameter, String value){
-    HashMap<String,String> map = modelInnerParameters.get(outer);
-        if(map != null){
-            map.put(parameter,value);
+    private JsonObject createJsonObject(String[] entries,String value){
+        String currentEntery = entries[0];
+        JsonObject object = new JsonObject();
+        entries =removeFirstInArray(entries);
+        if(entries.length > 0){
+            object.add(currentEntery,createJsonObject(entries,value));
         }else{
-            map = new HashMap<>();
-            map.put(parameter,value);
-            modelInnerParameters.put(outer,map);
+            object.addProperty(currentEntery,value);
         }
+        return object;
+    }
+
+    private String[] removeFirstInArray(String[] array){
+        String[] newArray = new String[array.length-1];
+        for(int i =1; i < array.length; i++){
+            newArray[i-1] = array[i];
+        }
+        return newArray;
     }
 
     public void addParameter(String parameter, String value){
-        modelParameters.put(parameter,value);
+        String[] map = parameter.split("\\.");
+        String entryKey = map[0];
+        HashMap<String,String> entry;
+
+        if(modelParameters.containsKey(entryKey)){
+            entry = modelParameters.get(entryKey);
+        }else{
+            entry = new HashMap<>();
+        }
+
+        StringBuilder innerEntry = new StringBuilder();
+
+        for (int i= 1; i < map.length;i ++){
+            if(i != map.length){
+                innerEntry.append(map[i]+".");
+            }
+        }
+
+        entry.put(innerEntry.toString(),value);
+
+        modelParameters.put(entryKey,entry);
     }
+
 
 }
