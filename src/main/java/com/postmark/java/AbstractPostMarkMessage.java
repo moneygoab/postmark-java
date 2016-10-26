@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Created by ling on 2016-10-24.
  */
-abstract class AbstractPostMarkMessage{
+public abstract class AbstractPostMarkMessage{
     // The sender's email address.
     @SerializedName("From")
     protected String fromAddress;
@@ -58,4 +58,75 @@ abstract class AbstractPostMarkMessage{
 
     }
 
+    public String getFromAddress() {
+        return fromAddress;
+    }
+
+    public void setFromAddress(String fromAddress) {
+        this.fromAddress = fromAddress;
+    }
+
+    public String getToAddress() {
+        return toAddress;
+    }
+
+    public void setToAddress(String toAddress) {
+        this.toAddress = toAddress;
+    }
+
+    public String getReplyToAddress() {
+        return replyToAddress;
+    }
+
+    public void setReplyToAddress(String replyToAddress) {
+        this.replyToAddress = replyToAddress;
+    }
+
+    public String getCcAddress() {
+        return ccAddress;
+    }
+
+    public void setCcAddress(String ccAddress) {
+        this.ccAddress = ccAddress;
+    }
+
+    public String getBccAddress() {
+        return bccAddress;
+    }
+
+    public void setBccAddress(String bccAddress) {
+        this.bccAddress = bccAddress;
+    }
+
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
+    public boolean isTracking() {
+        return tracking;
+    }
+
+    public void setTracking(boolean tracking) {
+        this.tracking = tracking;
+    }
+
+    public List<NameValuePair> getHeaders() {
+        return headers;
+    }
+
+    public void setHeaders(List<NameValuePair> headers) {
+        this.headers = headers;
+    }
+
+    public List<Attachment> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<Attachment> attachments) {
+        this.attachments = attachments;
+    }
 }

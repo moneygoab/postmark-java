@@ -109,158 +109,36 @@ public class PostmarkMessage extends AbstractPostMarkMessage{
         this.subject = (this.subject == null) ? "" : this.subject.trim();
     }
 
-
-    /**
-     * @return the from email address
-     */
-    public String getFromAddress() {
-        return fromAddress;
-    }
-
-    /**
-     * @param fromAddress The email address the message is sent from
-     */
-    public void setFromAddress(String fromAddress) {
-        this.fromAddress = fromAddress;
-    }
-
-    /**
-     * @return the to email address
-     */
-    public String getToAddress() {
-        return toAddress;
-    }
-
-    /**
-     * @param toAddress The email address the message is sent to
-     */
-    public void setToAddress(String toAddress) {
-        this.toAddress = toAddress;
-    }
-
-    /**
-     * @return the cc email address
-     */
-    public String getCcAddress() {
-        return ccAddress;
-    }
-
-    /**
-     * @param ccAddress The email address the message is sent to
-     */
-    public void setCcAddress(String ccAddress) {
-        this.ccAddress = ccAddress;
-    }
-
-    /**
-     * @return the bcc email address
-     */
-    public String getBccAddress() {
-        return bccAddress;
-    }
-
-    /**
-     * @param bccAddress The email address a blind carbon copy of the message is sent to
-     */
-    public void setBccAddress(String bccAddress) {
-        this.bccAddress = bccAddress;
-    }
-
-    /**
-     * @return the reply-to email address
-     */
-    public String getReplyToAddress() {
-        return replyToAddress;
-    }
-
-    /**
-     * @param replyToAddress The reply-to email address of the message
-     */
-    public void setReplyToAddress(String replyToAddress) {
-        this.replyToAddress = replyToAddress;
-    }
-
-    /**
-     * @return the email subject
-     */
     public String getSubject() {
         return subject;
     }
 
-    /**
-     * @param subject The email subject
-     */
     public void setSubject(String subject) {
         this.subject = subject;
     }
 
-    /**
-     * @return the body of a HTML message
-     */
     public String getHtmlBody() {
         return htmlBody;
     }
 
-    /**
-     * @param htmlBody The HTML body content of the message
-     */
     public void setHtmlBody(String htmlBody) {
         this.htmlBody = htmlBody;
     }
 
-    /**
-     * @return the body of a plain text message
-     */
     public String getTextBody() {
         return textBody;
     }
 
-    /**
-     * @param textBody The plain text body content of the message
-     */
     public void setTextBody(String textBody) {
         this.textBody = textBody;
     }
 
-    /**
-     * @return the tag (an optional category) that is associated with this mail
-     */
-    public String getTag() {
-        return tag;
+    public boolean isHTML() {
+        return isHTML;
     }
 
-    /**
-     * @param tag The tag (an optional category) that is associated with this mail
-     */
-    public void setTag(String tag) {
-        this.tag = tag;
-    }
-
-    /**
-     * @return the email headers
-     */
-    public List<NameValuePair> getHeaders() {
-        return headers;
-    }
-
-    /**
-     * @param headers A map of all the email headers
-     */
-    public void setHeaders(List<NameValuePair> headers) {
-        this.headers = headers;
-    }
-
-    public List<Attachment> getAttachments() {
-        return attachments;
-    }
-
-    /**
-     * Lets you attach file. See {@link Attachment} for details.
-     *
-     * @param attachments list of attachments
-     */
-    public void setAttachments(List<Attachment> attachments) {
-        this.attachments = attachments;
+    public void setHTML(boolean HTML) {
+        isHTML = HTML;
     }
 
     @Override

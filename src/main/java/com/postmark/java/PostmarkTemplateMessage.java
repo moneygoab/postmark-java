@@ -50,21 +50,18 @@ public class PostmarkTemplateMessage extends AbstractPostMarkMessage {
 
 
     private String generateTempleteModel(){
-        JsonParser parser = new JsonParser();
         JsonObject templeteModel = new JsonObject();
         for(Map.Entry<String,HashMap<String,String>> entry:modelParameters.entrySet()){
             JsonObject object = new JsonObject();
             HashMap<String,String> map = entry.getValue();
 
             for(Map.Entry<String,String> innerEntry: map.entrySet()){
-
                 String[] entryMap = innerEntry.getKey().split("\\.");
                 if(entryMap.length > 1){
                     object.add(entryMap[0],createJsonObject(removeFirstInArray(entryMap),innerEntry.getValue()));
                 }else{
                     object.addProperty(entryMap[0],innerEntry.getValue());
                 }
-
             }
 
             templeteModel.add(entry.getKey(),object);
@@ -118,4 +115,11 @@ public class PostmarkTemplateMessage extends AbstractPostMarkMessage {
     }
 
 
+    public int getTemplateId() {
+        return templateId;
+    }
+
+    public void setTemplateId(int templateId) {
+        this.templateId = templateId;
+    }
 }
